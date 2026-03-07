@@ -60,11 +60,21 @@ export const columns: ColumnDef<Shipment>[] = [
       const shipment = row.original
 
       const handleStatusUpdate = async (status: string) => {
-        const result = await updateShipmentStatus(shipment.id, status)
-        if (result.success) {
-          toast.success('Status updated successfully')
-        }
-      }
+				try {
+					const result = await updateShipmentStatus(shipment.id, status);
+
+					if (result.success) {
+						toast.success("Status updated successfully");
+					}
+				} catch (error) {
+					const message =
+						error instanceof Error
+							? error.message
+							: "Failed to update shipment status";
+
+					toast.error(message);
+				}
+			};
 
       return (
         <DropdownMenu>
