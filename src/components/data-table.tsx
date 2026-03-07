@@ -51,16 +51,17 @@ export function DataTable<TData, TValue>({
   })
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString())
-    if (sorting.length > 0) {
-      params.set('sort', sorting[0].id)
-      params.set('desc', String(sorting[0].desc))
-    } else {
-      params.delete('sort')
-      params.delete('desc')
-    }
-    router.push(`/dashboard?${params.toString()}`)
-  }, [table.getState().sorting, searchParams, router])
+		const params = new URLSearchParams(searchParams.toString());
+		if (sorting.length > 0) {
+			params.set("sort", sorting[0].id);
+			params.set("desc", String(sorting[0].desc));
+		} else {
+			params.delete("sort");
+			params.delete("desc");
+		}
+		router.push(`/dashboard?${params.toString()}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [sorting]);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value
