@@ -18,7 +18,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -35,6 +35,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([])
   const [tableData, setTableData] = useState<TData[]>(data)
   const [loading, setLoading] = useState(false)
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     setTableData(data)
@@ -64,12 +65,18 @@ export function DataTable<TData, TValue>({
 	}, [sorting]);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value
-    setLoading(true)
-    const results = await searchShipments(query)
-    setTableData(results as TData[])
-    setLoading(false)
-  }
+		const query = e.target.value;
+
+		const requestId = ++requestIdRef.current;
+		setLoading(true);
+
+		const results = await searchShipments(query);
+
+		if (requestId === requestIdRef.current) {
+			setTableData(results as TData[]);
+			setLoading(false);
+		}
+	};
 
   return (
     <div>
